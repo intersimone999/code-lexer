@@ -8,6 +8,16 @@ module CodeLexer
             @dictionary = ["NOOP"] + dictionary
         end
         
+        def abstract_everything
+            self.abstract_identifiers
+            self.abstract_numbers
+            self.abstract_comments
+            self.abstract_strings
+            self.abstract_spaces
+            
+            return self
+        end
+        
         def abstract_identifiers
             @abstract_identifiers = true
             return self
