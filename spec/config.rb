@@ -37,6 +37,14 @@ describe CodeLexer::Config do
         expect(r1[0]).to eq :keyword
     end
     
+    it "should find the best matching rule when there are multiple matches (with comments)" do
+        config = CodeLexer::Config.new("#{File.dirname(File.expand_path($0))}/test_folder/javascript.clex")
+        
+        r1 = config.matching_rule("// if (parts.length === 4) {\n")
+        expect(r1.size).to eq 2
+        expect(r1[0]).to eq :comment
+    end
+    
     it "should use the fallback when no rule matches" do
         config = CodeLexer::Config.new("#{File.dirname(File.expand_path($0))}/test_folder/t1.clex")
         
