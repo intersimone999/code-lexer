@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.description = "Source code lexer configurable for any programming language that allows to tokenize and abstract a given source file"
   s.authors     = ["Simone Scalabrino"]
   s.email       = 's.scalabrino9@gmail.com'
-  s.files       = Dir.glob("lib/**/*.rb") + Dir.glob("lib/**/*.clex")
+  s.files       = Dir.glob("lib/**/*.rb") + Dir.glob("lib/**/*.yml") + Dir.glob("lib/**/*.yaml")
   s.homepage    = 'https://github.com/intersimone999/code-lexer'
   s.license     = "GPL-3.0-only"
   
