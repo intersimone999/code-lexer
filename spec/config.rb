@@ -3,7 +3,7 @@ require 'rspec/autorun'
 
 describe CodeLexer::Config do
     it "should correctly load all the available rules" do
-        config = CodeLexer::Config.new("#{File.dirname(File.expand_path($0))}/test_folder/t1.clex")
+        config = CodeLexer::Config.new("#{File.dirname(File.expand_path($0))}/test_folder/t1.yml")
         
         # Four rules plus a fallback "other"
         expect(config.rules.size).to eq 5
@@ -22,7 +22,7 @@ describe CodeLexer::Config do
     end
     
     it "should find the best matching rule when there is a single match" do
-        config = CodeLexer::Config.new("#{File.dirname(File.expand_path($0))}/test_folder/t1.clex")
+        config = CodeLexer::Config.new("#{File.dirname(File.expand_path($0))}/test_folder/t1.yml")
         
         r1 = config.matching_rule("artrew void")
         expect(r1.size).to eq 2
@@ -30,7 +30,7 @@ describe CodeLexer::Config do
     end
     
     it "should find the best matching rule when there are multiple matches" do
-        config = CodeLexer::Config.new("#{File.dirname(File.expand_path($0))}/test_folder/t1.clex")
+        config = CodeLexer::Config.new("#{File.dirname(File.expand_path($0))}/test_folder/t1.yml")
         
         r1 = config.matching_rule("abstract void")
         expect(r1.size).to eq 2
@@ -38,7 +38,7 @@ describe CodeLexer::Config do
     end
     
     it "should find the best matching rule when there are multiple matches (with comments)" do
-        config = CodeLexer::Config.new("#{File.dirname(File.expand_path($0))}/test_folder/javascript.clex")
+        config = CodeLexer::Config.new("#{File.dirname(File.expand_path($0))}/test_folder/javascript.yml")
         
         r1 = config.matching_rule("// if (parts.length === 4) {\n")
         expect(r1.size).to eq 2
@@ -46,7 +46,7 @@ describe CodeLexer::Config do
     end
     
     it "should use the fallback when no rule matches" do
-        config = CodeLexer::Config.new("#{File.dirname(File.expand_path($0))}/test_folder/t1.clex")
+        config = CodeLexer::Config.new("#{File.dirname(File.expand_path($0))}/test_folder/t1.yml")
         
         r1 = config.matching_rule("@test")
         expect(r1.size).to eq 2

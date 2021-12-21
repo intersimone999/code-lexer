@@ -3,7 +3,7 @@ require 'rspec/autorun'
 
 describe CodeLexer::Lexer do
     it "should correctly parse a simple text" do
-        lexer = CodeLexer::Lexer.new("#{File.dirname(File.expand_path($0))}/test_folder/javascript.clex")
+        lexer = CodeLexer::Lexer.new("#{File.dirname(File.expand_path($0))}/test_folder/javascript.yml")
         lexed = lexer.lex("if (a == b) return 0;")
         expected_tokens = [
             CodeLexer::Token.new(:keyword, "if"),

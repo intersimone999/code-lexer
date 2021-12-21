@@ -1,3 +1,5 @@
+require 'yaml'
+
 module CodeLexer
     class Config
         attr_reader     :rules
@@ -5,7 +7,7 @@ module CodeLexer
             @config = File.basename(path)
             @rules = []
             
-            load_rules(File.read(path))
+            load_rules(path)
         end
         
         def matching_rule(text)
@@ -25,11 +27,15 @@ module CodeLexer
         
         private
         def load_rules(content)
-            content.split("\n").each do |line|
-                name, regex = line.split(":", 2)
-                regex = Regexp.new("^" + regex)
-                
-                @rules << [name.to_sym, regex]
+            parsed = YAML.load_file(content)
+            
+            
+            parsed['lexer'].each do |name, regexs|
+                regexs.each do |regex|
+                    p regex
+                    regex = Regexp.new("^" + regex)
+                    @rules << [name.to_sym, regex]
+                end
             end
             
             @rules << [:other, /./]

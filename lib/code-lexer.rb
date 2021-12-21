@@ -5,6 +5,6 @@ require_relative 'code-lexer/token'
 
 module CodeLexer
     def self.get(language)
-        return Lexer.new("#{File.dirname(File.expand_path(__FILE__))}/code-lexer/languages/#{language}.clex")
+        return Lexer.new("#{File.dirname(File.expand_path(__FILE__))}/code-lexer/languages/#{language}.yml")
     end
 end
