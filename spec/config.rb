@@ -9,7 +9,7 @@ describe CodeLexer::Config do
         expect(config.rules.size).to eq 5
         
         expect(config.rules[0][0]).to eq :keyword
-        expect(config.rules[0][1]).to eq /^(?:abstract|arguments|boolean|break|byte|case|catch|char|const|continue|debugger|default|delete|do|double|else|eval|false|final|finally|float|for|function|goto|if|implements|in|instanceof|int|interface|let|long|native|new|null|package|private|protected|public|return|short|static|switch|synchronized|this|throw|throws|transient|true|try|typeof|var|void|volatile|while|with|yield|class|enum|export|extends|import|super|from)/
+        expect(config.rules[0][1].source).to eq "^(?:abstract|arguments|boolean|break|byte|case|catch|char|const|continue|debugger|default|delete|do|double|else|eval|false|final|finally|float|for|function|goto|if|implements|in|instanceof|int|interface|let|long|native|new|null|package|private|protected|public|return|short|static|switch|synchronized|this|throw|throws|transient|true|try|typeof|var|void|volatile|while|with|yield|class|enum|export|extends|import|super|from)"
         
         expect(config.rules[1][0]).to eq :identifier
         expect(config.rules[1][1].source).to eq "^[$A-Za-z_][$A-Za-z0-9_]*"
