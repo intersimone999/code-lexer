@@ -18,13 +18,7 @@ module CodeLexer
         
         def value=(v)
             @value = v
-            if @type == :newline
-                @abstracted_value = Token.special("NEWLINE")
-            elsif v =~ /\s/
-                @abstracted_value = Token.special(v.gsub(/\s/, "·"))
-            else
-                @abstracted_value = v
-            end
+            self.reset_abstraction
         end
         
         def to_s
@@ -37,6 +31,16 @@ module CodeLexer
                 
         def ==(oth)
             @type == oth.type && @value == oth.value && @abstracted_value == oth.abstracted_value
+        end
+        
+        def reset_abstraction
+            if @type == :newline
+                @abstracted_value = Token.special("NEWLINE")
+            elsif @value =~ /\s/
+                @abstracted_value = Token.special(@value.gsub(/\s/, "·"))
+            else
+                @abstracted_value = @value.clone
+            end
         end
     end
 end

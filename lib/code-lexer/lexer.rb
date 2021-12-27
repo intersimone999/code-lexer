@@ -12,7 +12,7 @@ module CodeLexer
             end
         end
         
-        def lex(content)
+        def lex(content, abstractor = nil)
             content = content.clone
             tokens = []
             while content.length > 0
@@ -23,17 +23,25 @@ module CodeLexer
                 end
             end
             
-            return LexedContent.new(tokens)
+            return LexedContent.new(tokens, abstractor)
         end
     end
     
     class LexedContent
         attr_reader     :tokens
+        attr_reader     :abstractor
         
-        def initialize(tokens)
+        def initialize(tokens, abstractor = nil)
             @tokens = tokens
+            @abstractor = abstractor
+            
+            @abstractor.abstract!(@tokens) if @abstractor
         end
-                
+        
+        def reconstruct
+            @tokens.map { |t| t.value.to_s }.join("")
+        end
+        
         def token_lines
             result = []
             current_line = []
@@ -53,10 +61,16 @@ module CodeLexer
         end
         
         def token_stream(abstractor = nil)
-            abstractor.abstract!(@tokens) if abstractor
-            
             result = []
-            @tokens.each do |token|
+            
+            tokens = @tokens
+            if abstractor
+                tokens = tokens.map { |t| t.clone }
+                tokens.each { |t| t.reset_abstraction }
+                abstractor.abstract!(tokens)
+            end
+            
+            tokens.each do |token|
                 result << token.abstracted_value
             end
             
