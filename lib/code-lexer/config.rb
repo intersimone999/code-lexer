@@ -32,8 +32,7 @@ module CodeLexer
             
             parsed['lexer'].each do |name, regexs|
                 regexs.each do |regex|
-                    p regex
-                    regex = Regexp.new("^" + regex)
+                    regex = Regexp.new("^" + regex, Regexp::MULTILINE)
                     @rules << [name.to_sym, regex]
                 end
             end
