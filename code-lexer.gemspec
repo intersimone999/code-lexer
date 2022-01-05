@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'code-lexer'
-  s.version     = '0.6'
-  s.date        = '2021-12-21'
+  s.version     = '0.7'
+  s.date        = '2022-01-05'
   s.summary     = "Simple source code lexer"
   s.description = "Source code lexer configurable for any programming language that allows to tokenize and abstract a given source file"
   s.authors     = ["Simone Scalabrino"]
