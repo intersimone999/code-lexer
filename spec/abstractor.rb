@@ -239,7 +239,6 @@ describe CodeLexer::Abstractor do
         abstractor.abstract!(sequence)
         
         expect(sequence.count { |t| t.type == :comment }).to eq 0
-
     end
 end
  

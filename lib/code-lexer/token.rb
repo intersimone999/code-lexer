@@ -11,6 +11,19 @@ module CodeLexer
         attr_accessor :value
         attr_accessor :abstracted_value
         
+        def self.from_string(string)
+            unless string.start_with?(SPECIAL_TOKEN_OPEN)
+                value = string
+            else
+                value = nil
+            end
+            
+            token = Token.new(:unknown, value)
+            token.abstracted_value = string
+            
+            return token
+        end
+        
         def initialize(type, value)
             @type = type
             self.value = value

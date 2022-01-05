@@ -101,5 +101,64 @@ describe CodeLexer::LexedContent do
         expect(lines[1]).to eq tokens[10..13]
         expect(lines[2]).to eq [tokens[15]]
     end
+    
+    it "should correctly deabstract a simple abstracted sequence" do        
+        abstractor = CodeLexer::Abstractor.new.abstract_everything
+        abstractor.identifiers_dictionary << "a"
+        abstractor.identifiers_dictionary << "b"
+        abstractor.numbers_dictionary << "0"
+        abstractor.strings_dictionary << "test"
+        
+        content = CodeLexer::LexedContent.from_stream_string(
+            "if ¬WHITESPACE¬ ( ¬ID1¬ ¬WHITESPACE¬ == ¬WHITESPACE¬ ¬ID2¬ ¬WHITESPACE¬ && ¬WHITESPACE¬ ¬ID2¬ ¬WHITESPACE¬ != ¬WHITESPACE¬ ¬STRING¬ ) ¬WHITESPACE¬ return ¬WHITESPACE¬ ¬NUMBER¬ ;",
+            abstractor
+        )
+        
+        expected = [
+            CodeLexer::Token.new(:unknown, "if"),
+            CodeLexer::Token.new(:space, " "),
+            CodeLexer::Token.new(:unknown, "("),
+            CodeLexer::Token.new(:identifier, "a"),
+            CodeLexer::Token.new(:space, " "),
+            CodeLexer::Token.new(:unknown, "=="),
+            CodeLexer::Token.new(:space, " "),
+            CodeLexer::Token.new(:identifier, "b"),
+            CodeLexer::Token.new(:space, " "),
+            CodeLexer::Token.new(:unknown, "&&"),
+            CodeLexer::Token.new(:space, " "),
+            CodeLexer::Token.new(:identifier, "b"),
+            CodeLexer::Token.new(:space, " "),
+            CodeLexer::Token.new(:unknown, "!="),
+            CodeLexer::Token.new(:space, " "),
+            CodeLexer::Token.new(:string, "\"test\""),
+            CodeLexer::Token.new(:unknown, ")"),
+            CodeLexer::Token.new(:space, " "),
+            CodeLexer::Token.new(:unknown, "return"),
+            CodeLexer::Token.new(:space, " "),
+            CodeLexer::Token.new(:number, "0"),
+            CodeLexer::Token.new(:unknown, ";"),
+        ]
+        
+        abstractor.abstract!(expected)
+        
+        expect(content.tokens).to eq expected
+    end
+    
+    it "should correctly return a string representation" do        
+        abstractor = CodeLexer::Abstractor.new.abstract_everything
+        abstractor.identifiers_dictionary << "a"
+        abstractor.identifiers_dictionary << "b"
+        abstractor.numbers_dictionary << "0"
+        abstractor.strings_dictionary << "test"
+        
+        content = CodeLexer::LexedContent.from_stream_string(
+            "if ¬WHITESPACE¬ ( ¬ID1¬ ¬WHITESPACE¬ == ¬WHITESPACE¬ ¬ID2¬ ¬WHITESPACE¬ && ¬WHITESPACE¬ ¬ID2¬ ¬WHITESPACE¬ != ¬WHITESPACE¬ ¬STRING¬ ) ¬WHITESPACE¬ return ¬WHITESPACE¬ ¬NUMBER¬ ;",
+            abstractor
+        )
+        
+        expected = 'if (a == b && b != "test") return 0;'
+        
+        expect(content.to_s).to eq expected
+    end
 end
  
