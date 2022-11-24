@@ -10,19 +10,19 @@ module CodeLexer
             load_rules(path)
         end
         
-        def matching_rule(text)
-            min_score = 10000
-            min_couple = []
+        def matching_rule(text, start_index)
+            min_index = 10000
+            min_triple = []
             @rules.each do |name, regex|
-                if (score = (text =~ regex))
-                    if score < min_score
-                        min_score = score
-                        min_couple = [name, regex]
+                if (first_occurrence_index = text.index(regex, start_index))
+                    if first_occurrence_index < min_index
+                        min_index = first_occurrence_index
+                        new_start_index = Regexp.last_match.end(0)
+                        min_triple = [name, first_occurrence_index, new_start_index]
                     end
                 end
             end
-            
-            return *min_couple
+            return *min_triple
         end
         
         private
@@ -32,7 +32,7 @@ module CodeLexer
             
             parsed['lexer'].each do |name, regexs|
                 regexs.each do |regex|
-                    regex = Regexp.new("^" + regex, Regexp::MULTILINE)
+                    regex = Regexp.new(regex, Regexp::MULTILINE)
                     @rules << [name.to_sym, regex]
                 end
             end
