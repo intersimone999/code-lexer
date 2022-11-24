@@ -16,6 +16,7 @@ module CodeLexer
             self.abstract_numbers
             self.abstract_comments
             self.abstract_strings
+            self.abstract_indentations
             self.abstract_spaces
             
             return self
@@ -59,6 +60,11 @@ module CodeLexer
         
         def abstract_strings
             @abstractor_pieces << StringAbstractor.new(self)
+            return self
+        end
+
+        def abstract_indentations
+            @abstractor_pieces << IndentationAbstractor.new(self)
             return self
         end
         
@@ -205,7 +211,24 @@ module CodeLexer
                 token.type = :comment
                 token.value = 'Unknown comment'
             end
-            
+            return tokens
+        end
+    end
+
+    class IndentationAbstractor < AbstractorPiece
+        def abstract(tokens)
+            tokens.select { |t| t.type == :indentation }.each do |indentation_token|
+                indentation_token.abstracted_value = Token.special("INDENTATION")
+            end
+
+            return tokens
+        end
+
+        def deabstract(tokens)
+            tokens.select { |t| t.abstracted_value == Token.special("INDENTATION") }.each do |token|
+                token.type = :indentation
+            end
+
             return tokens
         end
     end
@@ -213,26 +236,18 @@ module CodeLexer
     class SpaceAbstractor < AbstractorPiece
         def abstract(tokens)
             tokens.select { |t| t.type == :space }.each do |space_token|
-                previous_index = tokens.index(space_token) - 1
-                if previous_index < 0 || tokens[previous_index].type == :newline
-                    space_token.abstracted_value = Token.special("INDENTATION")
-                else
-                    space_token.abstracted_value = Token.special("WHITESPACE")
-                end
+                space_token.abstracted_value = Token.special("WHITESPACE")
             end
-            
+
             return tokens
         end
-        
+
         def deabstract(tokens)
-            tokens.select do |t| 
-                t.abstracted_value == Token.special("INDENTATION") || 
-                t.abstracted_value == Token.special("WHITESPACE")
-            end.each do |token|
+            tokens.select { |t| t.abstracted_value == Token.special("WHITESPACE") }.each do |token|
                 token.type = :space
                 token.value = ' '
             end
-            
+
             return tokens
         end
     end

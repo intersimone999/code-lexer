@@ -49,6 +49,8 @@ module CodeLexer
         def reset_abstraction
             if @type == :newline
                 @abstracted_value = Token.special("NEWLINE")
+            elsif @type == :indentation
+               @abstracted_value = Token.special("INDENTATION")
             elsif @value =~ /\s/
                 @abstracted_value = Token.special(@value.gsub(/\s/, "·"))
             else
