@@ -137,6 +137,33 @@ describe CodeLexer::Abstractor do
         expect(sequence[5].abstracted_value).to eq CodeLexer::Token.special("STRING")
         expect(sequence[12].abstracted_value).to eq CodeLexer::Token.special("STRING")
     end
+
+    it "should correctly abstract indentations" do
+        sequence = [
+          CodeLexer::Token.new(:keyword, "if"),
+          CodeLexer::Token.new(:space, " "),
+          CodeLexer::Token.new(:parenthesis, "("),
+          CodeLexer::Token.new(:identifier, "t1"),
+          CodeLexer::Token.new(:operator, "=="),
+          CodeLexer::Token.new(:identifier, "t2"),
+          CodeLexer::Token.new(:parenthesis, ")"),
+          CodeLexer::Token.new(:space, " "),
+          CodeLexer::Token.new(:keyword, "return"),
+          CodeLexer::Token.new(:space, " "),
+          CodeLexer::Token.new(:identifier, "t1"),
+          CodeLexer::Token.new(:semicolon, ";"),
+          CodeLexer::Token.new(:newline, "\n"),
+          CodeLexer::Token.new(:indentation, "\t\t")
+        ]
+        original_sequence = sequence.clone
+
+        abstractor = CodeLexer::Abstractor.new.abstract_indentations
+        abstractor.abstract!(sequence)
+
+        expect(sequence.select { |t| t.type != :indentation }).to eq(original_sequence.select { |t| t.type != :indentation })
+
+        expect(sequence[13].abstracted_value).to eq CodeLexer::Token.special("INDENTATION")
+    end
     
     it "should correctly abstract spaces" do
         sequence = [
@@ -153,7 +180,7 @@ describe CodeLexer::Abstractor do
             CodeLexer::Token.new(:identifier, "t1"),
             CodeLexer::Token.new(:semicolon, ";"),
             CodeLexer::Token.new(:newline, "\n"),
-            CodeLexer::Token.new(:space, "\t\t")
+            CodeLexer::Token.new(:indentation, "\t\t")
         ]
         original_sequence = sequence.clone
         
@@ -165,7 +192,6 @@ describe CodeLexer::Abstractor do
         expect(sequence[1].abstracted_value).to eq CodeLexer::Token.special("WHITESPACE")
         expect(sequence[7].abstracted_value).to eq CodeLexer::Token.special("WHITESPACE")
         expect(sequence[9].abstracted_value).to eq CodeLexer::Token.special("WHITESPACE")
-        expect(sequence[13].abstracted_value).to eq CodeLexer::Token.special("INDENTATION")
     end
     
     it "should correctly remove newlines" do

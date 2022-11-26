@@ -13,16 +13,18 @@ module CodeLexer
         end
         
         def lex(content, abstractor = nil)
+            checkpoint_index = 0
             content = content.clone
             tokens = []
-            while content.length > 0
-                token_name, regex = @config.matching_rule(content)
-                content.sub!(regex) do |value|
-                    tokens << Token.new(token_name, value)
-                    ""
+            while checkpoint_index < content.size
+                previous_index = checkpoint_index
+                token_name, occurrence_index, checkpoint_index = @config.matching_rule(content, checkpoint_index)
+
+                if checkpoint_index != previous_index
+                    tokens << Token.new(token_name, content[occurrence_index..checkpoint_index-1])
                 end
             end
-            
+
             return LexedContent.new(tokens, abstractor)
         end
     end

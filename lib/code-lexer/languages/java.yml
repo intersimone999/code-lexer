@@ -34,5 +34,7 @@ lexer:
         - \;
     newline:
         - "[\\n\\r]"
+    indentation:
+        - (?:(^\s+|(?<=\n)\s+))
     space:
-        - \s+
+        - \s
